@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WebLab</string>
+    <string name="tagline">Turn your Android phone into a lightweight local web-development workstation.</string>
+</resources>

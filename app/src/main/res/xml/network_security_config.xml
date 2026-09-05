@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  WebLab's live preview loads a project's local development server, which is
+  plain HTTP on the loopback interface. Cleartext traffic is allowed ONLY for
+  127.0.0.1 / localhost so the preview WebView can reach it. All other traffic
+  (e.g. npm registry access) uses the OS default (HTTPS-only) config.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">localhost</domain>
+    </domain-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
