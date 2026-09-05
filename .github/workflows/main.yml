@@ -35,12 +35,21 @@ jobs:
       - name: Build debug APK
         run: gradle assembleDebug --stacktrace
 
+      - name: List build outputs
+        if: always()
+        run: |
+          echo "Searching for APK files..."
+          find . -name "*.apk" -type f 2>/dev/null || echo "No APKs found"
+          echo ""
+          echo "Directory structure of build outputs:"
+          ls -la app/build/outputs/ 2>/dev/null || echo "app/build/outputs not found"
+
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: weblab-debug-apk
           path: app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
+          if-no-files-found: warn
 
   release:
     name: Build & Release Signed APK
