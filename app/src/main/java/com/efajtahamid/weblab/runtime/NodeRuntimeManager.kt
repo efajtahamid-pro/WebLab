@@ -109,7 +109,36 @@ class NodeRuntimeManager(private val context: Context) {
 
             val process = builder.start()
             processes[id] = process
-            updateInfo(id, label, fullCommand, workingDirectory.absolutePath, port, ProcessState.RUNNING, process.pid())
+
+            // Obtain PID in a way that works on Java 8 (reflection) and on newer JVMs.
+            val pid: Long? = try {
+                // Try reflectively calling pid() if available at runtime
+                val pidMethod = process.javaClass.getMethod("pid")
+                val raw = pidMethod.invoke(process)
+                when (raw) {
+                    is Long -> raw
+                    is Int -> raw.toLong()
+                    is Number -> raw.toLong()
+                    else -> null
+                }
+            } catch (e: Exception) {
+                // Fallback: some Java 8 implementations expose a private 'pid' field
+                try {
+                    val pidField = process.javaClass.getDeclaredField("pid")
+                    pidField.isAccessible = true
+                    val raw = pidField.get(process)
+                    when (raw) {
+                        is Int -> raw.toLong()
+                        is Long -> raw
+                        is Number -> raw.toLong()
+                        else -> null
+                    }
+                } catch (ex: Exception) {
+                    null
+                }
+            }
+
+            updateInfo(id, label, fullCommand, workingDirectory.absolutePath, port, ProcessState.RUNNING, pid)
 
             pumpStream(id, process.inputStream, OutputStreamKind.STDOUT)
             pumpStream(id, process.errorStream, OutputStreamKind.STDERR)
