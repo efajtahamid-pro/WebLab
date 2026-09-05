@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Preview
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Terminal
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -273,6 +274,7 @@ private fun WorkspaceBottomBar(navController: NavHostController) {
  * those tools operate on a specific project's sandbox, so WebLab asks the user
  * to open one rather than showing a terminal with nothing to run against.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun OpenAProjectFirstScreen(title: String) {
     Scaffold(topBar = { TopAppBar(title = { Text(title) }) }) { padding ->
